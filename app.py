@@ -19,6 +19,7 @@ def init_db():
             title TEXT NOT NULL,
             content TEXT NOT NULL,
             username TEXT NOT NULL,
+            category TEXT NOT NULL DEFAULT 'Γενικά',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
@@ -51,12 +52,13 @@ def index():
 def create_post():
     title = request.form.get('title')
     content = request.form.get('content')
-    username = request.form.get('username') or 'Ανώνυμος'  # Αν είναι κενό, βάζει "Ανώνυμος"
+    username = request.form.get('username') or 'Ανώνυμος' 
+    category = request.form.get('category') or 'Γενικά'
     
     if title and content:
         conn = get_db_connection()
-        conn.execute('INSERT INTO posts (title, content, username) VALUES (?, ?, ?)',
-                     (title, content, username))
+        conn.execute('INSERT INTO posts (title, content, username, category) VALUES (?, ?, ?, ?)',
+                     (title, content, username, category))
         conn.commit()
         conn.close()
     return redirect(url_for('index'))
